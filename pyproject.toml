@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "knobby"
+name = "knobbie"
 version = "0.1.0"
 description = "Генерация ассетов для вращающихся кнобов (поворотных ручек на устройствах, например гитарных педалях)"
 authors = ["The <at.thealchemist@gmail.com>"]
