@@ -1,9 +1,9 @@
-import attr
 import logging
-
 from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from typing import Dict, List, Union
+
+import attr
 
 from .strip import Strip
 
@@ -18,12 +18,13 @@ class StripBuilderMetadata:
         `file_paths: List[str]` - путь к исходным файлам, из которых был построен стрип.
         `extra: Dict` - дополнительная информация о построении стрипа
     """
+
     frames_count: int
     file_paths: List[str] = []
     extra: Dict = {}
 
+
 class StripBuilderResultSaverInterface(metaclass=ABCMeta):
-    
     @abstractmethod
     def save(self, file_path: str) -> None:
         """
@@ -43,15 +44,16 @@ class StripBuilderResult(StripBuilderResultSaverInterface):
         `strip: Strip` - готовый стрип
         `metadata: StripBuilderMetadata` - данные, использованные при пострроении стрипа
     """
+
     strip: Strip
     metadata: StripBuilderMetadata
-    
+
     @property
     def logger(self) -> logging.Logger:
         return logging.getLogger(self.__class__.__name__)
-    
+
     def __str__(self) -> str:
-        file_paths_str = ', '.join([str(p) for p in self.metadata.file_paths])
+        file_paths_str = ", ".join([str(p) for p in self.metadata.file_paths])
         return f"""Successfully built new {self.strip.direction} strip
         from '{file_paths_str}' on {self.metadata.frames_count} frames""".strip()
 

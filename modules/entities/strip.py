@@ -1,7 +1,6 @@
-import attr
-
 from typing import List, Tuple
 
+import attr
 from PIL import Image  # PIL.Image object
 from PIL.Image import Image as PILImage  # PIL.Image typing
 
@@ -12,6 +11,7 @@ class StripDirection(ArgumentHandledEnum):
     """
     Направление стрипа. Может быть вертикальным (vertical) и горизонтальным (horizontal)
     """
+
     VERTICAL = "vertical"
     HORIZONTAL = "horizontal"
 
@@ -28,6 +28,7 @@ class Strip:
         `direction: StripDirection - направление стрипа`
         `image: Image` - объект `PIL.Image` сгенерированного стрипа
     """
+
     direction: StripDirection = StripDirection.VERTICAL
     image: Image = None
 
@@ -48,9 +49,9 @@ class Strip:
         width, height = max_sized_item.size
         return {
             "vertical": (width, height * items_count),
-            "horizontal": (width * items_count, height)
+            "horizontal": (width * items_count, height),
         }.get(self.direction.value)
-            
+
     def fill(self, items: List[PILImage]) -> None:
         """
         Функция создаёт стрип и заполняет его изображениями из переданного набора.
@@ -58,16 +59,10 @@ class Strip:
         Args:
             `items: List[PILImage]` - набор изображений, из которых будет сгенерирован стрип.
         """
-        strip_image = Image.new(
-            "RGBA", 
-            size=self._compute_size(items)
-        )
+        strip_image = Image.new("RGBA", size=self._compute_size(items))
         for idx, frame in enumerate(items):
             width, height = frame.size
-            directions = {
-                "vertical": (0, height * idx),
-                "horizontal": (width * idx, 0)
-            }
+            directions = {"vertical": (0, height * idx), "horizontal": (width * idx, 0)}
             strip_image.paste(frame, directions.get(self.direction.value))
 
         self.image = strip_image

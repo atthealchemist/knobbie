@@ -1,20 +1,23 @@
 from typing import Tuple
-import attr
 
+import attr
 from PIL.Image import Image as PILImage
 
 from modules.enums import ArgumentHandledEnum
 
+
 class KnobRotation(ArgumentHandledEnum):
     """
-    Направление поворота кнопки. 
+    Направление поворота кнопки.
     Может быть по часовой стрелке (clockwise) и против часовой стрелки (counterclockwise).
     """
+
     CLOCKWISE = -1
     COUNTERCLOCKWISE = 1
 
     def __str__(self) -> str:
         return self.name.lower()
+
 
 @attr.s(auto_attribs=True, frozen=True)
 class Knob:
@@ -26,6 +29,7 @@ class Knob:
         `step: int` - шаг угла, на который будет повёрнуто каждое следующее изображение.
         `rotation: KnobRotation` - направление поворота кноба.
     """
+
     image: PILImage
     step: int = 10
     rotation: KnobRotation = KnobRotation.CLOCKWISE
