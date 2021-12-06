@@ -37,32 +37,3 @@ class StripBuilderResult:
     """
     image: Image
     metadata: StripBuilderMetadata
-
-
-# @attr.s(frozen=True, auto_attribs=True)
-# class KnobStripBuilderMetadata(StripBuilderMetadata):
-#     """
-#     Данные, использованные при построении стрипа для кнобов
-
-#     Attributes:
-#         `frames_count: int` - количество кадров в стрипе.
-#         `direction: StripDirection` - направление стрипа
-#         `file_paths: str` - путь к исходным файлам, из которого был построен стрип.
-#         `rotation: KnobRotation` - направление поворота кноба
-#     """
-#     rotation: KnobRotation = KnobRotation.CLOCKWISE
-
-#     def __str__(self) -> str:
-#         return f"{super().__str__()} rotated {self.rotation}"
-
-
-# @attr.s(frozen=True, auto_attribs=True)
-# class KnobStripBuilderResult(StripBuilderResult):
-#     """
-#     Результат построения стрипа кнобов
-
-#     Attributes:
-#         `image: Image` - объект типа `PIL.Image`, готовое изображение стрипа кнобов.
-#         `metadata: KnobBuilderMetadata` - данные, использованные при пострроении стрипа кнобов.
-#     """
-#     metadata: KnobStripBuilderMetadata
