@@ -2,10 +2,10 @@
 
 import logging
 
-from modules.builder import KnobStripBuilder
-from modules.entities.knob import Knob, KnobRotation
-from modules.entities.strip import StripDirection
+from modules.builders.strip_builder import StripBuilder
 logging.basicConfig(level=logging.INFO)
+
+from modules.builders import KnobStripBuilder
 
 from PIL import Image
 from pathlib import Path
@@ -14,10 +14,17 @@ from argparse import ArgumentParser
 
 def parse_args():
     parser = ArgumentParser()
+    
     parser.add_argument(
-        "-p", "--path", 
-        action="store", 
-        help="Path to knob file"
+        "type",
+        action="store",
+        help="Type of builder (strip or knob)",
+        default="strip"
+    )
+    parser.add_argument(
+        "-p", "--paths",
+        nargs='+', 
+        help="Path(s) to build strip/knob file(s)"
     )
     parser.add_argument(
         "-o", "--output", 
@@ -43,19 +50,25 @@ def parse_args():
 def main():
     args = parse_args()
 
-    knob_path = Path(args.path)
-    knob = Knob(
-        image=Image.open(str(knob_path.absolute())),
-        rotation=KnobRotation.from_argument(args.rotation)
-    )
-    knob_strip_builder = KnobStripBuilder(
-        knob=knob,
-        direction=StripDirection.from_argument(args.direction)
-    )
-    knob_strip = knob_strip_builder.build()
-    knob_strip_builder.save(
-        image=knob_strip.image,
-        file_path=knob_path.parent / f"{Path(args.output).stem}_{knob_strip.metadata.direction}_{knob_strip.metadata.rotation}{knob_path.suffix}"
+    builder_types = {
+        "strip": StripBuilder,
+        "knob": KnobStripBuilder
+    }
+
+    builder = builder_types.get(args.type)
+    builder_args = {
+        "direction": args.direction,
+        "items": [Image.open(p) for p in args.paths]
+    }
+    if args.type == "knob":
+        image, *_ = builder_args.pop("items")
+        builder_args["knob_image"] = image
+        builder_args["rotation"] = args.rotation
+
+    b = builder(**builder_args)
+    strip_result = b.build()
+    strip_result.save(
+        file_path=f"{Path(args.output)}_{strip_result.strip.direction}_{strip_result.metadata.extra.get('rotation', '')}.png"
     )
 
 if __name__ == "__main__":

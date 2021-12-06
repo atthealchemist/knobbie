@@ -1,9 +1,11 @@
-from typing import List
-from PIL.Image import Image
 import attr
+import logging
 
-from .knob import KnobRotation
-from .strip import StripDirection
+from abc import ABCMeta, abstractmethod
+from pathlib import Path
+from typing import Dict, List, Union
+
+from .strip import Strip
 
 
 @attr.s(frozen=True, auto_attribs=True)
@@ -13,56 +15,46 @@ class StripBuilderMetadata:
 
     Attributes:
         `frames_count: int` - количество кадров в стрипе.
-        `direction: StripDirection` - направление стрипа
-        `file_path: str` - путь к исходному файлу, из которого был построен стрип.
+        `file_paths: List[str]` - путь к исходным файлам, из которых был построен стрип.
+        `extra: Dict` - дополнительная информация о построении стрипа
     """
     frames_count: int
-    direction: StripDirection
     file_paths: List[str] = []
+    extra: Dict = {}
 
-    def __str__(self) -> str:
-        file_paths_str = ', '.join([str(p) for p in self.file_paths])
-        return f"""Successfully built new {self.direction} strip 
-        from '{file_paths_str}' on {self.frames_count} frames""".strip()
+class StripBuilderResultSaverInterface(metaclass=ABCMeta):
+    
+    @abstractmethod
+    def save(self, file_path: str) -> None:
+        """
+        Функция сохраняет `StripBuilderResult` по указанному пути.
+
+        Args:
+            `file_path: str` - путь, куда будет сохранено изображение
+        """
 
 
 @attr.s(frozen=True, auto_attribs=True)
-class StripBuilderResult:
+class StripBuilderResult(StripBuilderResultSaverInterface):
     """
     Результат построения стрипа
 
     Attributes:
-        `image: Image` - объект типа `PIL.Image`, готовое изображение стрипа.
+        `strip: Strip` - готовый стрип
         `metadata: StripBuilderMetadata` - данные, использованные при пострроении стрипа
     """
-    image: Image
+    strip: Strip
     metadata: StripBuilderMetadata
-
-
-@attr.s(frozen=True, auto_attribs=True)
-class KnobStripBuilderMetadata(StripBuilderMetadata):
-    """
-    Данные, использованные при построении стрипа для кнобов
-
-    Attributes:
-        `frames_count: int` - количество кадров в стрипе.
-        `direction: StripDirection` - направление стрипа
-        `file_paths: str` - путь к исходным файлам, из которого был построен стрип.
-        `rotation: KnobRotation` - направление поворота кноба
-    """
-    rotation: KnobRotation = KnobRotation.CLOCKWISE
-
+    
+    @property
+    def logger(self) -> logging.Logger:
+        return logging.getLogger(self.__class__.__name__)
+    
     def __str__(self) -> str:
-        return f"{super().__str__()} rotated {self.rotation}"
+        file_paths_str = ', '.join([str(p) for p in self.metadata.file_paths])
+        return f"""Successfully built new {self.strip.direction} strip
+        from '{file_paths_str}' on {self.metadata.frames_count} frames""".strip()
 
-
-@attr.s(frozen=True, auto_attribs=True)
-class KnobStripBuilderResult(StripBuilderResult):
-    """
-    Результат построения стрипа кнобов
-
-    Attributes:
-        `image: Image` - объект типа `PIL.Image`, готовое изображение стрипа кнобов.
-        `metadata: KnobBuilderMetadata` - данные, использованные при пострроении стрипа кнобов.
-    """
-    metadata: KnobStripBuilderMetadata
+    def save(self, file_path: Union[str, Path]) -> None:
+        self.strip.image.save(file_path)
+        self.logger.info(f"Saved strip to '{Path(file_path).absolute()}'")
