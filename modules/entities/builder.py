@@ -1,8 +1,7 @@
-from typing import List
+from typing import Dict, List
 from PIL.Image import Image
 import attr
 
-from .knob import KnobRotation
 from .strip import StripDirection
 
 
@@ -19,6 +18,7 @@ class StripBuilderMetadata:
     frames_count: int
     direction: StripDirection
     file_paths: List[str] = []
+    extra: Dict = {}
 
     def __str__(self) -> str:
         file_paths_str = ', '.join([str(p) for p in self.file_paths])
@@ -39,30 +39,30 @@ class StripBuilderResult:
     metadata: StripBuilderMetadata
 
 
-@attr.s(frozen=True, auto_attribs=True)
-class KnobStripBuilderMetadata(StripBuilderMetadata):
-    """
-    Данные, использованные при построении стрипа для кнобов
+# @attr.s(frozen=True, auto_attribs=True)
+# class KnobStripBuilderMetadata(StripBuilderMetadata):
+#     """
+#     Данные, использованные при построении стрипа для кнобов
 
-    Attributes:
-        `frames_count: int` - количество кадров в стрипе.
-        `direction: StripDirection` - направление стрипа
-        `file_paths: str` - путь к исходным файлам, из которого был построен стрип.
-        `rotation: KnobRotation` - направление поворота кноба
-    """
-    rotation: KnobRotation = KnobRotation.CLOCKWISE
+#     Attributes:
+#         `frames_count: int` - количество кадров в стрипе.
+#         `direction: StripDirection` - направление стрипа
+#         `file_paths: str` - путь к исходным файлам, из которого был построен стрип.
+#         `rotation: KnobRotation` - направление поворота кноба
+#     """
+#     rotation: KnobRotation = KnobRotation.CLOCKWISE
 
-    def __str__(self) -> str:
-        return f"{super().__str__()} rotated {self.rotation}"
+#     def __str__(self) -> str:
+#         return f"{super().__str__()} rotated {self.rotation}"
 
 
-@attr.s(frozen=True, auto_attribs=True)
-class KnobStripBuilderResult(StripBuilderResult):
-    """
-    Результат построения стрипа кнобов
+# @attr.s(frozen=True, auto_attribs=True)
+# class KnobStripBuilderResult(StripBuilderResult):
+#     """
+#     Результат построения стрипа кнобов
 
-    Attributes:
-        `image: Image` - объект типа `PIL.Image`, готовое изображение стрипа кнобов.
-        `metadata: KnobBuilderMetadata` - данные, использованные при пострроении стрипа кнобов.
-    """
-    metadata: KnobStripBuilderMetadata
+#     Attributes:
+#         `image: Image` - объект типа `PIL.Image`, готовое изображение стрипа кнобов.
+#         `metadata: KnobBuilderMetadata` - данные, использованные при пострроении стрипа кнобов.
+#     """
+#     metadata: KnobStripBuilderMetadata
