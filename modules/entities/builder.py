@@ -5,7 +5,7 @@ from typing import Dict, List, Union
 
 import attr
 
-from modules.entities import Strip
+from modules.entities.strip import Strip
 
 
 @attr.s(frozen=True, auto_attribs=True)
@@ -22,6 +22,12 @@ class StripBuilderMetadata:
     frames_count: int
     file_paths: List[str] = []
     extra: Dict = {}
+
+    def to_dict(self):
+        """
+        Функция преобразует объект метадаты в словарь.
+        """
+        return attr.asdict(self)
 
 
 class StripBuilderResultSaverInterface(metaclass=ABCMeta):
