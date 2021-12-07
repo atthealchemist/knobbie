@@ -1,5 +1,6 @@
-import pytest
-
-
 def test_one():
-    assert 1 == 1
+    """
+    Заглушка для проверки работоспособности pytest
+    """
+    number = 2
+    assert number + number == 4

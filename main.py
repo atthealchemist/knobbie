@@ -1,46 +1,47 @@
 # /usr/bin/env python
 
 import logging
-
-from modules.builders.strip_builder import StripBuilder
-
-logging.basicConfig(level=logging.INFO)
-
 from argparse import ArgumentParser
-from pathlib import Path
 
 from PIL import Image
 
-from modules.builders import KnobStripBuilder
+from modules.builders import KnobStripBuilder, StripBuilder
+
+logging.basicConfig(level=logging.INFO)
 
 
 def parse_args():
+    """
+    Функция парсит аргументы командной строки, используя argparse.ArgumentParser.
+    """
     parser = ArgumentParser()
 
     parser.add_argument(
-        "type", action="store", help="Type of builder (strip or knob)", default="strip"
+        "type",
+        help="Type of builder (strip or knob)",
+        default="strip",
     )
     parser.add_argument(
-        "-p", "--paths", nargs="+", help="Path(s) to build strip/knob file(s)"
+        "-p",
+        "--paths",
+        nargs="+",
+        help="Path(s) to build strip/knob file(s)",
     )
     parser.add_argument(
         "-o",
         "--output",
-        action="store",
         default="knob_strip.png",
         help="Output file name",
     )
     parser.add_argument(
         "-d",
         "--direction",
-        action="store",
         default="vertical",
         help="Direction of strip - vertical (default) or horizontal",
     )
     parser.add_argument(
         "-r",
         "--rotation",
-        action="store",
         default="clockwise",
         help="Rotation direction - clockwise (default) or counterclockwise",
     )
@@ -48,25 +49,41 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    args = parse_args()
+def get_builder(args):
+    """
+    Функция получает конкретного сборщика из аргументов командной строки,
+    переданных программе.
 
-    builder_types = {"strip": StripBuilder, "knob": KnobStripBuilder}
-
-    builder = builder_types.get(args.type)
+    Args:
+        `args` - список аргументов командной строки
+    """
+    builder_cls = {"strip": StripBuilder, "knob": KnobStripBuilder}.get(args.type)
     builder_args = {
         "direction": args.direction,
-        "items": [Image.open(p) for p in args.paths],
+        "items": [Image.open(path) for path in args.paths],
     }
     if args.type == "knob":
         image, *_ = builder_args.pop("items")
         builder_args["knob_image"] = image
         builder_args["rotation"] = args.rotation
 
-    b = builder(**builder_args)
-    strip_result = b.build()
+    return builder_cls(**builder_args)
+
+
+def main():
+    """
+    Главная функция для работы в CLI режиме.
+    """
+    args = parse_args()
+
+    builder = get_builder(args)
+    strip_result = builder.build()
     strip_result.save(
-        file_path=f"{Path(args.output)}_{strip_result.strip.direction}_{strip_result.metadata.extra.get('rotation', '')}.png"
+        file_path="{output}_{direction}_{rotation}.png".format(
+            output=args.output,
+            direction=strip_result.strip.direction,
+            rotation=strip_result.metadata.extra.get("rotation"),
+        ),
     )
 
 

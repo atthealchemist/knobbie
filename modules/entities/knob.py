@@ -34,7 +34,7 @@ class Knob:
     step: int = 10
     rotation: KnobRotation = KnobRotation.CLOCKWISE
 
-    MAX_ANGLE: int = 270
+    max_angle: int = 270
 
     @property
     def size(self) -> Tuple[int, int]:
