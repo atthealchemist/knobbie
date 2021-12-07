@@ -16,6 +16,7 @@ black = "^21.11b1"
 isort = "^5.10.1"
 autoflake = "^1.4"
 coverage = "^6.2"
+wemake-python-styleguide = "^0.15.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
