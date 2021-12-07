@@ -5,12 +5,13 @@ from argparse import ArgumentParser
 
 from PIL import Image
 
-from modules.builders import KnobStripBuilder, StripBuilder
+from modules.builders.knob_builder import KnobStripBuilder
+from modules.builders.strip_builder import StripBuilder
 
 logging.basicConfig(level=logging.INFO)
 
 
-def parse_args():
+def parse_args(args=None):
     """
     Функция парсит аргументы командной строки, используя argparse.ArgumentParser.
     """
@@ -42,11 +43,11 @@ def parse_args():
     parser.add_argument(
         "-r",
         "--rotation",
-        default="clockwise",
-        help="Rotation direction - clockwise (default) or counterclockwise",
+        default=None,
+        help="Rotation direction - clockwise or counterclockwise",
     )
 
-    return parser.parse_args()
+    return parser.parse_args(args)
 
 
 def get_builder(args):

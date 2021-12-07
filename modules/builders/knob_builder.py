@@ -1,7 +1,7 @@
 from PIL.Image import Image
 
-from modules.builders import StripBuilder
-from modules.entities.builder import StripBuilderResult
+from modules.builders.strip_builder import StripBuilder
+from modules.entities.builder import StripBuilderMetadata, StripBuilderResult
 from modules.entities.knob import Knob, KnobRotation
 
 
@@ -45,8 +45,20 @@ class KnobStripBuilder(StripBuilder):
         """
         Функция генерирует кноб стрип.
 
+        Также мы обновляем метадату для сборки кноб стрипа.
+
         Returns: `StripBuilderResult`
         """
         build_result = super().build()
-        build_result.metadata.extra["rotation"] = self.knob.rotation
-        return build_result
+
+        return StripBuilderResult(
+            strip=build_result.strip,
+            metadata=StripBuilderMetadata(
+                **{
+                    **build_result.metadata.to_dict(),
+                    "extra": {
+                        "rotation": str(self.knob.rotation),
+                    },
+                },
+            ),
+        )
