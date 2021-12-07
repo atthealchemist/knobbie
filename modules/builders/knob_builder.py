@@ -1,30 +1,45 @@
 from PIL.Image import Image
 
+from modules.builders import StripBuilder
 from modules.entities.builder import StripBuilderResult
 from modules.entities.knob import Knob, KnobRotation
-from modules.entities.strip import StripDirection
-
-from .strip_builder import StripBuilder
 
 
 class KnobStripBuilder(StripBuilder):
+    """
+    Создание стрипа кнобов.
+    """
+
     def __init__(self, knob_image: Image, direction: str, rotation: str):
+        """
+        Создание стрипа кнобов.
+
+        Args:
+            `knob_image: PIL.Image` - изображение кноба
+            `direction: str` - направление стрипа. Может быть "horizontal" и "vertical".
+            `rotation: str` - направление поворота кнопки. Может быть "clockwise" и "counterclockwise".
+        """
         self.knob = Knob(
-            image=knob_image, rotation=KnobRotation.from_argument(rotation)
+            image=knob_image,
+            rotation=KnobRotation.from_argument(rotation),
         )
 
-        super().__init__(items=[knob_image], direction=direction)
+        super().__init__(images=[knob_image], direction=direction)
 
     def process(self) -> None:
-        frames_count = int(self.knob.MAX_ANGLE / self.knob.step)
+        """
+        Функция вычисляет количество фреймов для кноба
+        и разворачивает кноб в стрипе это самое количество раз.
+        """
+        frames_count = int(self.knob.max_angle / self.knob.step)
         angle = 0
         frames = []
-        for item in self.items:
+        for image in self.images:
             for _ in range(frames_count):
-                rotated_knob = item.rotate(angle * self.knob.rotation.value)
+                rotated_knob = image.rotate(angle * self.knob.rotation.value)
                 frames.append(rotated_knob)
                 angle += self.knob.step
-        self.items = frames
+        self.images = frames
 
     def build(self) -> StripBuilderResult:
         """
@@ -32,6 +47,6 @@ class KnobStripBuilder(StripBuilder):
 
         Returns: `StripBuilderResult`
         """
-        result = super().build()
-        result.metadata.extra["rotation"] = self.knob.rotation
-        return result
+        build_result = super().build()
+        build_result.metadata.extra["rotation"] = self.knob.rotation
+        return build_result

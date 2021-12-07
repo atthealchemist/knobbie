@@ -1,4 +1,8 @@
+"""
+Глобальные константы, используемые во всём проекте.
+"""
+
 from pathlib import Path
 
-PROJECT_ROOT = ROOT = Path(__file__).parent.absolute()
+ROOT = Path(__file__).parent.absolute()
 DATA_DIR = ROOT / "data"

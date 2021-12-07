@@ -5,7 +5,7 @@ from typing import Dict, List, Union
 
 import attr
 
-from .strip import Strip
+from modules.entities import Strip
 
 
 @attr.s(frozen=True, auto_attribs=True)
@@ -25,6 +25,10 @@ class StripBuilderMetadata:
 
 
 class StripBuilderResultSaverInterface(metaclass=ABCMeta):
+    """
+    Сохранение результата сборки стрипа
+    """
+
     @abstractmethod
     def save(self, file_path: str) -> None:
         """
@@ -50,13 +54,25 @@ class StripBuilderResult(StripBuilderResultSaverInterface):
 
     @property
     def logger(self) -> logging.Logger:
+        """
+        Создаёт логгер, соответствующий имени текущего класса.
+        """
         return logging.getLogger(self.__class__.__name__)
 
     def __str__(self) -> str:
-        file_paths_str = ", ".join([str(p) for p in self.metadata.file_paths])
-        return f"""Successfully built new {self.strip.direction} strip
-        from '{file_paths_str}' on {self.metadata.frames_count} frames""".strip()
+        file_paths_str = ", ".join([str(path) for path in self.metadata.file_paths])
+        return "Successfully built new {direction} strip from '{paths}' on {frames_count} frames".format(
+            direction=self.strip.direction,
+            paths=file_paths_str,
+            frames_count=self.metadata.frames_count,
+        )
 
     def save(self, file_path: Union[str, Path]) -> None:
+        """
+        Функция сохраняет результат сборки стрипа в файл по указанному пути.
+
+        Args:
+            `file_path: Union[str, Path]` - по какому пути будет сохранён файл.
+        """
         self.strip.image.save(file_path)
-        self.logger.info(f"Saved strip to '{Path(file_path).absolute()}'")
+        self.logger.info(f"Saved strip to '{file_path}'")
