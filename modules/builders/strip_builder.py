@@ -34,9 +34,7 @@ class StripBuilderInterface(metaclass=ABCMeta):
 
 
 class StripBuilder(StripBuilderInterface):
-    """
-    Создание стрипа.
-    """
+    """Создание стрипа"""
 
     def __init__(self, images: List[Image], direction: str):
         """

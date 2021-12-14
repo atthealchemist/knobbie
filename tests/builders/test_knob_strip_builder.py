@@ -5,9 +5,7 @@ import pytest
 
 
 class TestKnobStripBuilder:
-    """
-    Тесты для сборки кноб стрипа.
-    """
+    """Тесты для сборки кноб стрипа."""
 
     @pytest.mark.parametrize("direction", ("vertical", "horizontal"))
     @pytest.mark.parametrize("rotation", ("clockwise", "counterclockwise"))

@@ -13,7 +13,8 @@ logging.basicConfig(level=logging.INFO)
 
 def parse_args(args=None):
     """
-    Функция парсит аргументы командной строки, используя argparse.ArgumentParser.
+    Функция парсит аргументы командной строки, 
+    используя argparse.ArgumentParser.
     """
     parser = ArgumentParser()
 

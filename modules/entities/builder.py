@@ -10,6 +10,7 @@ from modules.entities.strip import Strip
 
 @attr.s(frozen=True, auto_attribs=True)
 class StripBuilderMetadata:
+
     """
     Данные, использованные при построении стрипа
 
@@ -66,6 +67,9 @@ class StripBuilderResult(StripBuilderResultSaverInterface):
         return logging.getLogger(self.__class__.__name__)
 
     def __str__(self) -> str:
+        """
+        Собирает сообщение для логгера на основе данных объекта.
+        """
         file_paths_str = ", ".join([str(path) for path in self.metadata.file_paths])
         return "Successfully built new {direction} strip from '{paths}' on {frames_count} frames".format(
             direction=self.strip.direction,

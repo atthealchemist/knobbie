@@ -7,6 +7,7 @@ from modules.enums import ArgumentHandledEnum
 
 
 class KnobRotation(ArgumentHandledEnum):
+
     """
     Направление поворота кнопки.
     Может быть по часовой стрелке (clockwise) и против часовой стрелки (counterclockwise).
@@ -16,6 +17,7 @@ class KnobRotation(ArgumentHandledEnum):
     COUNTERCLOCKWISE = 1
 
     def __str__(self) -> str:
+        """Возвращает название выбранного значения."""
         return self.name.lower()
 
 

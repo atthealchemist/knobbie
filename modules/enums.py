@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class ArgumentHandledEnum(Enum):
+
     """
     Перечисление, позволяющее парсить значение, пришедшее из строкового аргумента
     """

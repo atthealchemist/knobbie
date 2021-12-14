@@ -5,9 +5,7 @@ import pytest
 
 
 class TestStripBuilder:
-    """
-    Тестируем сборку стрипа
-    """
+    """Тесты для сборщика стрипа"""
 
     @pytest.mark.parametrize("direction", ("vertical", "horizontal"))
     def test_strip_builder_create_ok(

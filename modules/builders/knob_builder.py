@@ -6,9 +6,7 @@ from modules.entities.knob import Knob, KnobRotation
 
 
 class KnobStripBuilder(StripBuilder):
-    """
-    Создание стрипа кнобов.
-    """
+    """Cборщик стрипа кнобов"""
 
     def __init__(self, knob_image: Image, direction: str, rotation: str):
         """
